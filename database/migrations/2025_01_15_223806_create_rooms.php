@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->foreignId("category_id")->references("id")->on("categories");
+            $table->timestamp("deleted_at")->nullable();
             $table->timestamps();
         });
     }

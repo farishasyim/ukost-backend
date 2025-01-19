@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->double("price");
-            $table->text("description");
-            $table->string("photo")->nullable();
-            $table->timestamp("deleted_at")->nullable();
+            $table->foreignId("transaction_id")->references("id")->on("transactions");
+            $table->enum("status", ["paid", "unpaid"]);
+            $table->string("invoice_number");
+            $table->timestamp("expired_at");
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('invoices');
     }
 };
