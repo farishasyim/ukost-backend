@@ -92,6 +92,8 @@ class CategoryController extends Controller
     {
         $category = Category::where("id", $id)->first();
 
+        Room::where("category_id", $id)->delete();
+
         $category->delete();
 
         return $this->success("Success delete category");

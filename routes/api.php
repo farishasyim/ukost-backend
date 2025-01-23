@@ -14,6 +14,8 @@ Route::middleware('auth:api')->group(function () {
             Route::post("{id}", [CategoryController::class, "update"]);
             Route::delete("{id}", [CategoryController::class, "delete"]);
         });
+        Route::post("store", [RoomController::class, "store"]);
+        Route::delete("{id}", [RoomController::class, "delete"]);
     });
     Route::get("user-management", [UserController::class, "index"]);
     Route::prefix("user-management")->group(function () {
