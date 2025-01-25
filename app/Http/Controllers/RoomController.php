@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\PivotRoom;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
@@ -52,5 +53,35 @@ class RoomController extends Controller
         Room::where("id", $id)->delete();
 
         return $this->success("Data has been deleted");
+    }
+
+    public function storePivot(request $request)
+    {
+        $request->validate([
+            "room_id" => "required",
+            "customer_id" => "required",
+        ]);
+
+        $pivot = PivotRoom::where([
+            ["room_id", "=", $request->room_id],
+            ["customer_id", "=", $request->customer_id],
+        ])->first();
+
+        if (!isset($pivot)) {
+            $pivot = PivotRoom::create($request->all());
+        } else {
+            $data = [
+                "room_id" => $request->room_id,
+                "customer_id" => $request->customer_id
+            ];
+
+            if (isset($request->left_at)) {
+                $data["left_at"] = $request->left_at;
+            }
+
+            $pivot->update($data);
+        }
+
+        return $this->success("Store data has been successed", $pivot);
     }
 }

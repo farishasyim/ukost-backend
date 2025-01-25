@@ -16,8 +16,8 @@ Route::middleware('auth:api')->group(function () {
         });
         Route::post("store", [RoomController::class, "store"]);
         Route::delete("{id}", [RoomController::class, "delete"]);
+        Route::post("pivot-store", [RoomController::class, "storePivot"]);
     });
-    Route::get("user-management", [UserController::class, "index"]);
     Route::prefix("user-management")->group(function () {
         Route::post("store", [UserController::class, "store"]);
         Route::post("{id}", [UserController::class, "update"]);
@@ -26,5 +26,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, "logout"]);
 });
 
+Route::get("user-management", [UserController::class, "index"]);
 
 Route::post('/login', [AuthController::class, "login"]);
