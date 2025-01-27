@@ -46,7 +46,7 @@ class User extends Authenticatable
     public function getProfileLinkAttribute()
     {
         if (isset($this->profile_picture)) {
-            return env('APP_URL') . '/profile_picture/' . $this->photo;
+            return env('APP_URL') . '/profile_picture/' . $this->profile_picture;
         }
         return env('APP_URL') . '/default.jpg';
     }
@@ -54,7 +54,7 @@ class User extends Authenticatable
     public function getIdentityCardLinkAttribute()
     {
         if (isset($this->identity_card)) {
-            return env('APP_URL') . '/identity_card/' . $this->photo;
+            return env('APP_URL') . '/identity_card/' . $this->identity_card;
         }
     }
 

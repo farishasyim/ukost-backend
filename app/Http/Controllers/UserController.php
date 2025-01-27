@@ -94,7 +94,9 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return $this->success("Success update user data");
+        $user = User::where("id", $id)->first();
+
+        return $this->success("Success update user data", $user);
     }
 
     public function delete($id)
