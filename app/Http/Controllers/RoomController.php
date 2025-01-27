@@ -11,41 +11,41 @@ class RoomController extends Controller
 {
     public function index(request $request)
     {
-        $categories = Category::with("rooms")->cursorPaginate();
+        $categories = Category::with("rooms.pivot")->cursorPaginate();
 
         return $this->paginate(null, $categories);
+    }
+
+    public function show(int $id)
+    {
+        $room = Room::with(["category", "pivot.user"])->where("id", $id)->first();
+
+        return $this->success(null, $room);
     }
 
     public function store(request $request)
     {
         $request->validate([
+            "name" => "required",
             "category_id" => "required",
         ]);
-        $rooms = Room::where("category_id", $request->category_id)->count();
-        $validate = true;
-        $count = 0;
 
-        for ($i = 0; $i < $rooms; $i++) {
-            $name = "Kamar No." . $i + 1;
-            $room = Room::where("name", $name)->first();
-            if (!isset($room)) {
-                $count += 1;
-                Room::create([
-                    "category_id" => $request->category_id,
-                    "name" => $name,
-                ]);
-                $validate = false;
-            }
-        }
+        $room = Room::create($request->all());
 
-        if ($validate) {
-            $room = Room::create([
-                "category_id" => $request->category_id,
-                "name" => "Kamar No." . $rooms + 1,
-            ]);
-        }
+        return $this->success("Success store data", $room);
+    }
 
-        return $this->success($validate ? "Success store data" : "Success store $count rooms");
+    public function update(int $id, request $request)
+    {
+        $request->validate([
+            "name" => "required",
+        ]);
+
+        $room = Room::where("id", $id)->first();
+
+        $room->update($request->all());
+
+        return $this->success("Success update data");
     }
 
     public function delete($id)
@@ -62,19 +62,18 @@ class RoomController extends Controller
             "customer_id" => "required",
         ]);
 
-        $pivot = PivotRoom::where([
+        $pivot = PivotRoom::whereNull("left_at")->where([
             ["room_id", "=", $request->room_id],
             ["customer_id", "=", $request->customer_id],
-        ])->first();
+        ])->orderBy("created_at", "DESC")->first();
+
+        $data = $request->only(["room_id", "customer_id"]);
 
         if (!isset($pivot)) {
-            $pivot = PivotRoom::create($request->all());
+            $data["created_at"] = $request->date;
+            $pivot = PivotRoom::create($data);
         } else {
-            $data = [
-                "room_id" => $request->room_id,
-                "customer_id" => $request->customer_id
-            ];
-
+            $data = [];
             if (isset($request->left_at)) {
                 $data["left_at"] = $request->left_at;
             }
@@ -82,6 +81,6 @@ class RoomController extends Controller
             $pivot->update($data);
         }
 
-        return $this->success("Store data has been successed", $pivot);
+        return $this->success(isset($pivot) ? "Update data has been successed" : "Store data has been successed");
     }
 }

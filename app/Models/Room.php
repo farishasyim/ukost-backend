@@ -16,8 +16,15 @@ class Room extends Model
         "category_id",
     ];
 
+    protected $hidden = ["deleted_at"];
+
     public function category()
     {
         return $this->belongsTo(Category::class, "category_id");
+    }
+
+    public function pivot()
+    {
+        return $this->hasOne(PivotRoom::class, "room_id")->whereNull("left_at")->ofMany("created_at", "max");
     }
 }

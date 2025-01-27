@@ -12,7 +12,16 @@ class UserController extends Controller
 {
     public function index(request $request)
     {
-        $users = User::with("pivot")->where("role", "customer")->cursorPaginate();
+        $users = User::with("pivot")->where(function ($query) use ($request) {
+            if (isset($request->type)) {
+                if ($request->type == "available") {
+                    $query->doesntHave("pivot");
+                } else if ($request->type == "unavailable") {
+                    $query->has("pivot");
+                }
+            }
+            return $query;
+        })->where("role", "customer")->cursorPaginate();
 
         return $this->paginate(null, $users);
     }
@@ -33,7 +42,7 @@ class UserController extends Controller
 
         if (isset($request->identity_card)) {
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->identity_card->extension();
-            $request->identity_card->move(public_path() . "/identity_number", $rename);
+            $request->identity_card->move(public_path() . "/identity_card", $rename);
             $data["identity_card"] = $rename;
         }
 
@@ -67,10 +76,10 @@ class UserController extends Controller
 
         if (isset($request->identity_card)) {
             if ($user->identity_card != null) {
-                File::delete(public_path() . "/identity_number/" . $user->identity_card);
+                File::delete(public_path() . "/identity_card/" . $user->identity_card);
             }
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->identity_card->extension();
-            $request->identity_card->move(public_path() . "/identity_number", $rename);
+            $request->identity_card->move(public_path() . "/identity_card", $rename);
             $data["identity_card"] = $rename;
         }
 
@@ -97,7 +106,7 @@ class UserController extends Controller
         }
 
         if ($user->identity_card != null) {
-            File::delete(public_path() . "/identity_number/" . $user->identity_card);
+            File::delete(public_path() . "/identity_card/" . $user->identity_card);
         }
 
         $user->delete();

@@ -41,6 +41,23 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = ["profile_link", "identity_card_link"];
+
+    public function getProfileLinkAttribute()
+    {
+        if (isset($this->profile_picture)) {
+            return env('APP_URL') . '/profile_picture/' . $this->photo;
+        }
+        return env('APP_URL') . '/default.jpg';
+    }
+
+    public function getIdentityCardLinkAttribute()
+    {
+        if (isset($this->identity_card)) {
+            return env('APP_URL') . '/identity_card/' . $this->photo;
+        }
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -55,6 +72,6 @@ class User extends Authenticatable
 
     public function pivot()
     {
-        return $this->hasOne(PivotRoom::class, "customer_id");
+        return $this->hasOne(PivotRoom::class, "customer_id")->whereNull("left_at")->ofMany("created_at", "max");;
     }
 }

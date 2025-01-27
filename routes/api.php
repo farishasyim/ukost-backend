@@ -10,13 +10,16 @@ Route::middleware('auth:api')->group(function () {
     Route::get("room-management", [RoomController::class, "index"]);
     Route::prefix("room-management")->group(function () {
         Route::prefix("category")->group(function () {
+            Route::get("{id}", [CategoryController::class, "show"]);
             Route::post("store", [CategoryController::class, "store"]);
             Route::post("{id}", [CategoryController::class, "update"]);
             Route::delete("{id}", [CategoryController::class, "delete"]);
         });
         Route::post("store", [RoomController::class, "store"]);
-        Route::delete("{id}", [RoomController::class, "delete"]);
+        Route::get("{id}", [RoomController::class, "show"]);
         Route::post("pivot-store", [RoomController::class, "storePivot"]);
+        Route::post("{id}", [RoomController::class, "update"]);
+        Route::delete("{id}", [RoomController::class, "delete"]);
     });
     Route::prefix("user-management")->group(function () {
         Route::post("store", [UserController::class, "store"]);

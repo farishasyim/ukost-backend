@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Room;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
-use PHPUnit\TextUI\XmlConfiguration\Logging\Logging;
 
 class CategoryController extends Controller
 {
+    public function show(int $id)
+    {
+        $category = Category::with("rooms.pivot.user")->where("id", $id)->first();
+
+        return $this->success(null, $category);
+    }
+
     public function store(request $request)
     {
         DB::beginTransaction();

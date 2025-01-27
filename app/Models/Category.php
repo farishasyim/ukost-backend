@@ -26,6 +26,17 @@ class Category extends Model
         ];
     }
 
+    protected $hidden = ["deleted_at"];
+    protected $appends = ["image_link"];
+
+    public function getImageLinkAttribute()
+    {
+        if (isset($this->photo)) {
+            return env('APP_URL') . '/categories/' . $this->photo;
+        }
+        return env('APP_URL') . '/default.jpg';
+    }
+
     public function rooms()
     {
         return $this->hasMany(Room::class, "category_id");
