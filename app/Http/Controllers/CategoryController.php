@@ -34,7 +34,7 @@ class CategoryController extends Controller
 
             if (isset($request->photo)) {
                 $rename = date("YmdHis") . rand(0000000, 9999999) . "." . $request->photo->extension();
-                $request->photo->move(public_path() . "/categories", $rename);
+                $request->photo->move("/categories", $rename);
                 $data["photo"] = $rename;
             }
 
@@ -74,10 +74,10 @@ class CategoryController extends Controller
 
             if (isset($request->photo)) {
                 if ($category->photo != null) {
-                    File::delete(public_path() . "/categories/" . $category->photo);
+                    File::delete("/categories/" . $category->photo);
                 }
                 $rename = date("YmdHis") . rand(0000000, 9999999) . "." . $request->photo->extension();
-                $request->photo->move(public_path() . "/categories", $rename);
+                $request->photo->move("/categories", $rename);
                 $data["photo"] = $rename;
             }
 

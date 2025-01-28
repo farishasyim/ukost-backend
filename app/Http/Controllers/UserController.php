@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(request $request)
     {
-        $users = User::with("pivot")->where(function ($query) use ($request) {
+        $users = User::with("pivot.room")->where(function ($query) use ($request) {
             if (isset($request->type)) {
                 if ($request->type == "available") {
                     $query->doesntHave("pivot");
@@ -42,13 +42,13 @@ class UserController extends Controller
 
         if (isset($request->identity_card)) {
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->identity_card->extension();
-            $request->identity_card->move(public_path() . "/identity_card", $rename);
+            $request->identity_card->move("/identity_card", $rename);
             $data["identity_card"] = $rename;
         }
 
         if (isset($request->profile_picture)) {
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->profile_picture->extension();
-            $request->profile_picture->move(public_path() . "/profile_picture", $rename);
+            $request->profile_picture->move("/profile_picture", $rename);
             $data["profile_picture"] = $rename;
         }
 
@@ -76,19 +76,19 @@ class UserController extends Controller
 
         if (isset($request->identity_card)) {
             if ($user->identity_card != null) {
-                File::delete(public_path() . "/identity_card/" . $user->identity_card);
+                File::delete("/identity_card/" . $user->identity_card);
             }
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->identity_card->extension();
-            $request->identity_card->move(public_path() . "/identity_card", $rename);
+            $request->identity_card->move("/identity_card", $rename);
             $data["identity_card"] = $rename;
         }
 
         if (isset($request->profile_picture)) {
             if ($user->profile_picture != null) {
-                File::delete(public_path() . "/profile_picture/" . $user->profile_picture);
+                File::delete("/profile_picture/" . $user->profile_picture);
             }
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->profile_picture->extension();
-            $request->profile_picture->move(public_path() . "/profile_picture", $rename);
+            $request->profile_picture->move("/profile_picture", $rename);
             $data["profile_picture"] = $rename;
         }
 
@@ -104,11 +104,11 @@ class UserController extends Controller
         $user = User::where("id", $id)->first();
 
         if ($user->profile_picture != null) {
-            File::delete(public_path() . "/profile_picture/" . $user->profile_picture);
+            File::delete("/profile_picture/" . $user->profile_picture);
         }
 
         if ($user->identity_card != null) {
-            File::delete(public_path() . "/identity_card/" . $user->identity_card);
+            File::delete("/identity_card/" . $user->identity_card);
         }
 
         $user->delete();
