@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PivotRoom;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -42,13 +43,13 @@ class UserController extends Controller
 
         if (isset($request->identity_card)) {
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->identity_card->extension();
-            $request->identity_card->move("/identity_card", $rename);
+            $request->identity_card->move("identity_card", $rename);
             $data["identity_card"] = $rename;
         }
 
         if (isset($request->profile_picture)) {
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->profile_picture->extension();
-            $request->profile_picture->move("/profile_picture", $rename);
+            $request->profile_picture->move("profile_picture", $rename);
             $data["profile_picture"] = $rename;
         }
 
@@ -76,19 +77,19 @@ class UserController extends Controller
 
         if (isset($request->identity_card)) {
             if ($user->identity_card != null) {
-                File::delete("/identity_card/" . $user->identity_card);
+                File::delete("identity_card/" . $user->identity_card);
             }
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->identity_card->extension();
-            $request->identity_card->move("/identity_card", $rename);
+            $request->identity_card->move("identity_card", $rename);
             $data["identity_card"] = $rename;
         }
 
         if (isset($request->profile_picture)) {
             if ($user->profile_picture != null) {
-                File::delete("/profile_picture/" . $user->profile_picture);
+                File::delete("profile_picture/" . $user->profile_picture);
             }
             $rename = rand(00000, 99999) . date("YmdHis") . "." . $request->profile_picture->extension();
-            $request->profile_picture->move("/profile_picture", $rename);
+            $request->profile_picture->move("profile_picture", $rename);
             $data["profile_picture"] = $rename;
         }
 
@@ -104,12 +105,14 @@ class UserController extends Controller
         $user = User::where("id", $id)->first();
 
         if ($user->profile_picture != null) {
-            File::delete("/profile_picture/" . $user->profile_picture);
+            File::delete("profile_picture/" . $user->profile_picture);
         }
 
         if ($user->identity_card != null) {
-            File::delete("/identity_card/" . $user->identity_card);
+            File::delete("identity_card/" . $user->identity_card);
         }
+
+        PivotRoom::where("customer_id", $id)->delete();
 
         $user->delete();
 

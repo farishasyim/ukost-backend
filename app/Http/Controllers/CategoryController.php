@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\PivotRoom;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,7 @@ class CategoryController extends Controller
 
             if (isset($request->photo)) {
                 $rename = date("YmdHis") . rand(0000000, 9999999) . "." . $request->photo->extension();
-                $request->photo->move("/categories", $rename);
+                $request->photo->move("categories", $rename);
                 $data["photo"] = $rename;
             }
 
@@ -74,10 +75,10 @@ class CategoryController extends Controller
 
             if (isset($request->photo)) {
                 if ($category->photo != null) {
-                    File::delete("/categories/" . $category->photo);
+                    File::delete("categories/" . $category->photo);
                 }
                 $rename = date("YmdHis") . rand(0000000, 9999999) . "." . $request->photo->extension();
-                $request->photo->move("/categories", $rename);
+                $request->photo->move("categories", $rename);
                 $data["photo"] = $rename;
             }
 
@@ -96,6 +97,8 @@ class CategoryController extends Controller
     {
         $category = Category::where("id", $id)->first();
 
+        $ids = Room::where("category_id", $id)->pluck("id");
+        PivotRoom::whereIn("room_id", $ids)->delete();
         Room::where("category_id", $id)->delete();
 
         $category->delete();

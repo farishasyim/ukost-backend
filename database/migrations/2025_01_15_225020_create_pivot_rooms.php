@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId("customer_id")->references("id")->on("users");
             $table->foreignId("room_id")->references("id")->on("rooms");
             $table->timestamp("left_at")->nullable();
+            $table->timestamp("deleted_at")->nullable();
             $table->timestamps();
         });
     }

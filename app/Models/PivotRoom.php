@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PivotRoom extends Model
 {
+    use SoftDeletes;
+
     protected $table = "pivot_rooms";
 
     protected $fillable = [
@@ -13,6 +16,7 @@ class PivotRoom extends Model
         "room_id",
         "left_at",
         "created_at",
+        "deleted_at",
     ];
 
     public function user()

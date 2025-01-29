@@ -51,6 +51,7 @@ class RoomController extends Controller
     public function delete($id)
     {
         Room::where("id", $id)->delete();
+        PivotRoom::where("room_id", $id)->delete();
 
         return $this->success("Data has been deleted");
     }

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum("gender", ["laki-laki", "perempuan"]);
             $table->string("phone");
             $table->date("date_of_birth")->nullable();
+            $table->timestamp("deleted_at")->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
