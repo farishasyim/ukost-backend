@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum("role", ["customer", "admin"]);
-            $table->integer("identity_number")->nullable();
+            $table->bigInteger("identity_number")->nullable();
             $table->string("identity_card")->nullable();
             $table->string("profile_picture")->nullable();
             $table->enum("gender", ["laki-laki", "perempuan"]);

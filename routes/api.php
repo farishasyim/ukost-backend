@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,8 +29,13 @@ Route::middleware('auth:api')->group(function () {
         Route::post("{id}", [UserController::class, "update"]);
         Route::delete("{id}", [UserController::class, "delete"]);
     });
+    Route::get("transaction", [TransactionController::class, "index"]);
+
+    Route::prefix("transaction")->group(function () {
+        Route::post("store", [TransactionController::class, "store"]);
+    });
+
     Route::post('/logout', [AuthController::class, "logout"]);
 });
-
 
 Route::post('/login', [AuthController::class, "login"]);

@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("customer_id")->references("id")->on("users");
-            $table->foreignId("room_id")->references("id")->on("rooms");
-            $table->double("paid")->nullable();
+            $table->string("invoice");
+            $table->foreignId("pivot_room_id")->references("id")->on("pivot_rooms");
+            $table->foreignId("admin_id")->references("id")->on("users");
+            $table->timestamp("date")->nullable();
+            $table->enum("status", ["unpaid", "paid"])->default("unpaid");
+            $table->double("price");
+            $table->string("proof_payment")->nullable();
             $table->timestamps();
         });
     }

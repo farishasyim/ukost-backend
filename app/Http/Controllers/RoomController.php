@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
-    public function index(request $request)
+    public function index()
     {
         $categories = Category::with("rooms.pivot")->cursorPaginate();
 
@@ -32,7 +32,7 @@ class RoomController extends Controller
 
         $room = Room::create($request->all());
 
-        return $this->success("Success store data", $room);
+        return $this->success("Success store data", $room, [], 201);
     }
 
     public function update(int $id, request $request)
@@ -45,7 +45,7 @@ class RoomController extends Controller
 
         $room->update($request->all());
 
-        return $this->success("Success update data");
+        return $this->success("Success update data", null, [], 201);
     }
 
     public function delete($id)
@@ -53,7 +53,7 @@ class RoomController extends Controller
         Room::where("id", $id)->delete();
         PivotRoom::where("room_id", $id)->delete();
 
-        return $this->success("Data has been deleted");
+        return $this->success("Data has been deleted", null, [], 201);
     }
 
     public function storePivot(request $request)
@@ -82,6 +82,6 @@ class RoomController extends Controller
             $pivot->update($data);
         }
 
-        return $this->success(isset($pivot) ? "Update data has been successed" : "Store data has been successed");
+        return $this->success(isset($pivot) ? "Update data has been successed" : "Store data has been successed", null, [], 201);
     }
 }

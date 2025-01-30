@@ -57,7 +57,7 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        return $this->success("Success add user data", $user);
+        return $this->success("Success add user data", $user, [], 201);
     }
     public function update(int $id, request $request)
     {
@@ -97,7 +97,7 @@ class UserController extends Controller
 
         $user = User::where("id", $id)->first();
 
-        return $this->success("Success update user data", $user);
+        return $this->success("Success update user data", $user, [], 201);
     }
 
     public function delete($id)
@@ -116,6 +116,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return $this->success("Success delete user data");
+        return $this->success("Success delete user data", null, [], 201);
     }
 }
