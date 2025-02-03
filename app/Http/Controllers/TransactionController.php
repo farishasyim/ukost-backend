@@ -47,4 +47,11 @@ class TransactionController extends Controller
 
         return $this->success("Success store data", $transaction, [], 201);
     }
+
+    public function delete(int $id)
+    {
+        Transaction::where("id", $id)->delete();
+
+        return $this->success("Success delete data", null, [], 201);
+    }
 }
