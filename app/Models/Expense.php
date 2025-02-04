@@ -15,4 +15,24 @@ class Expense extends Model
         "photos",
         "verified_by",
     ];
+
+    protected $appends = ["urls"];
+
+    protected function casts(): array
+    {
+        return [
+            'photos' => 'array',
+        ];
+    }
+
+    public function getUrlsAttribute()
+    {
+        $data = [];
+        if (isset($this->photos)) {
+            foreach ($this->photos as $row) {
+                $data[] = env('APP_URL') . '/receipt/' . $row;
+            }
+        }
+        return $data;
+    }
 }

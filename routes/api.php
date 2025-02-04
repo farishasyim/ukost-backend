@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
@@ -34,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix("transaction")->group(function () {
         Route::post("store", [TransactionController::class, "store"]);
+        Route::post("{id}", [TransactionController::class, "update"]);
         Route::delete("{id}", [TransactionController::class, "delete"]);
     });
 
