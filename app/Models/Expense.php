@@ -9,11 +9,12 @@ class Expense extends Model
     protected $table = "expenses";
 
     protected $fillable = [
-        "customer_id",
+        "user_id",
         "title",
         "description",
         "photos",
-        "verified_by",
+        "price",
+        "created_at",
     ];
 
     protected $appends = ["urls"];
@@ -22,6 +23,7 @@ class Expense extends Model
     {
         return [
             'photos' => 'array',
+            'price' => 'integer',
         ];
     }
 
@@ -34,5 +36,10 @@ class Expense extends Model
             }
         }
         return $data;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id");
     }
 }

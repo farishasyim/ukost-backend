@@ -12,7 +12,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = Expense::cursorPaginate();
+        $expenses = Expense::with('user')->cursorPaginate();
 
         return $this->paginate(null, $expenses);
     }
@@ -22,40 +22,97 @@ class ExpenseController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                "customer_id" => "required",
                 "title" => "required",
                 "description" => "required",
+                "date" => "required",
+                "price" => "required",
                 'photos' => 'array|max:5',
                 'photos.*' => 'mimes:jpeg,jpg,png',
             ]);
 
-            $data = $request->all(["customer_id", "title", "description"]);
+            $data = $request->all(["title", "description", "price"]);
 
-            $data["verified_by"] = auth()->user()->id;
+            $data["user_id"] = auth()->user()->id;
 
             $photos = [];
 
-            foreach ($request->photos ?? [] as $row) {
+            $data["photos"] = [];
+
+            $data["created_at"] = $request->date;
+
+            foreach ($request->photos as $row) {
                 $rename = rand(00000, 99999) . date("YmdHis") . "." . $row->extension();
                 $row->move('receipt', $rename);
                 $photos[] = $rename;
-            }
+            };
 
             if (count($photos) > 0) {
-                $data["photos"] = json_encode($photos);
+                $data["photos"] = $photos;
             }
 
             $expense = Expense::create($data);
 
             DB::commit();
 
-            return $this->success("Success add data", $expense);
+            return $this->success("Success add data", $expense, [], 201);
         } catch (\Exception $e) {
             logger($e);
-            if (isset($data["photos"])) {
-                foreach ($data["photos"] as $name) {
-                    File::delete("receipt/$name");
+            foreach ($photos as $name) {
+                File::delete("receipt/$name");
+            }
+            throw $e;
+        }
+    }
+    public function update(int $id, request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                "title" => "required",
+                "description" => "required",
+                "date" => "required",
+                "price" => "required",
+                'photos' => 'array|max:5',
+                'photos.*' => 'mimes:jpeg,jpg,png',
+            ]);
+
+            $data = $request->all(["title", "description", "date", "price"]);
+
+            $expense = Expense::where("id", $id)->first();
+
+            $photos = $expense->photos;
+
+            $photos =  array_values(array_diff($photos, $request->deleted ?? []));
+
+            if (isset($request->deleted)) {
+                foreach ($request->deleted as $row) {
+                    File::delete("receipt/$row");
                 }
+            }
+
+            $data["photos"] = [];
+
+            $data["created_at"] = $request->date;
+
+            foreach ($request->photos ?? [] as $row) {
+                $rename = rand(00000, 99999) . date("YmdHis") . "." . $row->extension();
+                $row->move('receipt', $rename);
+                $photos[] = $rename;
+            };
+
+            if (count($photos) > 0) {
+                $data["photos"] = $photos;
+            }
+
+            $expense->update($data);
+
+            DB::commit();
+
+            return $this->success("Success update data", $expense, [], 201);
+        } catch (\Exception $e) {
+            logger($e);
+            foreach ($photos ?? [] as $name) {
+                File::delete("receipt/$name");
             }
             throw $e;
         }

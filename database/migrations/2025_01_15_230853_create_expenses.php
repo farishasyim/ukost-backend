@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("customer_id")->references("id")->on("users");
+            $table->foreignId("user_id")->references("id")->on("users");
             $table->string("title");
             $table->text("description");
+            $table->double("price");
             $table->text("photos");
-            $table->foreignId("verified_by")->references("id")->on("users");
             $table->timestamps();
         });
     }

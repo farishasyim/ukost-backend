@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(PivotRoom::class, "customer_id")->whereNull("left_at")->ofMany("created_at", "max");;
     }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class, "user_id");
+    }
 }

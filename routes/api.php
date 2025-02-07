@@ -41,6 +41,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix("expense")->group(function () {
         Route::post("store", [ExpenseController::class, "store"]);
+        Route::post("{id}", [ExpenseController::class, "update"]);
+        Route::delete("{id}", [ExpenseController::class, "delete"]);
     });
 
     Route::post('logout', [AuthController::class, "logout"]);
