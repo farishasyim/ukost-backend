@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Validator;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(request $request)
     {
-        $expenses = Expense::cursorPaginate();
+        $expenses = Expense::where(function ($builder) use ($request) {
+            if (isset($request->date)) {
+                return $builder->whereDate("created_at", $request->date);
+            }
+        })->cursorPaginate();
 
         return $this->paginate(null, $expenses);
     }
