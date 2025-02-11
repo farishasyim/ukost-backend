@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index(request $request)
     {
-        $users = User::with("pivot.room")->where(function ($query) use ($request) {
+        $users = User::with("pivot.room.category")->where(function ($query) use ($request) {
             if (isset($request->type)) {
                 if ($request->type == "available") {
                     $query->doesntHave("pivot");

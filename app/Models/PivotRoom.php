@@ -28,4 +28,9 @@ class PivotRoom extends Model
     {
         return $this->belongsTo(Room::class, "room_id");
     }
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class, "pivot_room_id");
+    }
 }
