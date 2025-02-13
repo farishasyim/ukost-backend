@@ -18,6 +18,11 @@ class TransactionController extends Controller
         return $this->paginate(null, $transactions);
     }
 
+    public function recentTransaction()
+    {
+        $date = [];
+    }
+
     public function store(request $request)
     {
         $rules = [

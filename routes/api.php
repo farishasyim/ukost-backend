@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix("transaction")->group(function () {
         Route::post("store", [TransactionController::class, "store"]);
+        Route::get("recent-transaction", [TransactionController::class, "recentTransaction"]);
         Route::post("{id}", [TransactionController::class, "update"]);
         Route::delete("{id}", [TransactionController::class, "delete"]);
     });
