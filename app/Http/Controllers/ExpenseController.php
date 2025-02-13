@@ -10,12 +10,18 @@ use Illuminate\Support\Facades\Validator;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(request $request)
     {
-        $expenses = Expense::with('user')->cursorPaginate();
+        $expenses = Expense::with("user")->where(function ($builder) use ($request) {
+            if (isset($request->date)) {
+                return $builder->whereDate("created_at", $request->date);
+            }
+        })->cursorPaginate();
 
         return $this->paginate(null, $expenses);
     }
+
+    public function recentTransaction() {}
 
     public function store(request $request)
     {
@@ -40,7 +46,7 @@ class ExpenseController extends Controller
 
             $data["created_at"] = $request->date;
 
-            foreach ($request->photos as $row) {
+            foreach ($request->photos ?? [] as $row) {
                 $rename = rand(00000, 99999) . date("YmdHis") . "." . $row->extension();
                 $row->move('receipt', $rename);
                 $photos[] = $rename;
