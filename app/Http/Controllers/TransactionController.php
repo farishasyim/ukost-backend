@@ -8,19 +8,37 @@ use Illuminate\Support\Facades\File;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(request $request)
     {
         $transactions = Transaction::with(["pivotRoom" => [
             "user",
             "room.category",
-        ]])->cursorPaginate();
+        ]])->whereHas("pivotRoom", function ($query) {
+            if (auth()->user()->role == "customer") {
+                return $query->where("customer_id", auth()->user()->id);
+            }
+        })->where(function ($query) use ($request) {
+            if (isset($request->status)) {
+                return $query->where("status", $request->status);
+            }
+        })->cursorPaginate();
 
         return $this->paginate(null, $transactions);
     }
 
     public function recentTransaction()
     {
-        $date = [];
+        $res = [];
+        for ($i = -6; $i <= 0; $i++) {
+            $price = Transaction::where("status", "paid")->whereDate("date", date("Y-m-d", strtotime("-$i day")))->sum("price");
+            $x = date("d/m/y", strtotime("-$i day"));
+            $res[] = [
+                "x_axis" => $x,
+                "y_axis" => $price,
+            ];
+        }
+
+        return $this->success(null, $res);
     }
 
     public function store(request $request)

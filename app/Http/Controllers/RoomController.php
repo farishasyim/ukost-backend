@@ -18,7 +18,7 @@ class RoomController extends Controller
 
     public function show(int $id)
     {
-        $room = Room::with(["category", "pivot.user"])->where("id", $id)->first();
+        $room = Room::with(["category", "pivot.user", "transactions.pivotRoom.user"])->where("id", $id)->first();
 
         return $this->success(null, $room);
     }
