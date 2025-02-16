@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId("admin_id")->references("id")->on("users");
             $table->timestamp("start_period");
             $table->timestamp("end_period");
+            $table->timestamp("date")->nullable();
             $table->enum("status", ["unpaid", "paid"])->default("unpaid");
             $table->double("price");
             $table->string("proof_payment")->nullable();

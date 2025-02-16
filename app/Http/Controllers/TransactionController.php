@@ -59,7 +59,9 @@ class TransactionController extends Controller
 
         $data["invoice"] = "INV-" . $request->user()->id .  rand(000, 999) . date("YmdHis");
 
-        $data["created_at"] = $request->date;
+        $data["start_period"] = $request->date;
+
+        $data["end_period"] = date("Y-m-d", strtotime("+1 month", strtotime($request->date)));
 
         if ($data["status"] == "paid") {
             $data["date"] = $request->date;
@@ -80,6 +82,7 @@ class TransactionController extends Controller
         $rules = [
             "photo" => "mimes:jpg,jpeg,png",
             "status" => "required",
+            "date" => "required",
         ];
 
         $request->validate($rules);

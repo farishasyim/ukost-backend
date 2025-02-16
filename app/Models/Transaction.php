@@ -12,6 +12,8 @@ class Transaction extends Model
         "pivot_room_id",
         "admin_id",
         "price",
+        "start_period",
+        "end_period",
         "status",
         "invoice",
         "date",
