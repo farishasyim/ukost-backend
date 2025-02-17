@@ -30,6 +30,6 @@ class Room extends Model
 
     public function transactions()
     {
-        return $this->hasManyThrough(Transaction::class, PivotRoom::class, "room_id", "pivot_room_id");
+        return $this->hasManyThrough(Transaction::class, PivotRoom::class, "room_id", "pivot_room_id")->orderBy("start_period", "DESC");
     }
 }

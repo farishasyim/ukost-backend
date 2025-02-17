@@ -26,6 +26,18 @@ class TransactionController extends Controller
         return $this->paginate(null, $transactions);
     }
 
+    public function report(request $request)
+    {
+        $transactions = Transaction::with(["pivotRoom" => ["user", "room.category"]])->whereHas("pivotRoom", fn($query) => $query->where("customer_id", $request->customer_id))->where(function ($query) use ($request) {
+            if (isset($request->status)) {
+                $query->whereIn("status", $request->status);
+            }
+            return $query;
+        })->orderBy("start_period", "DESC")->get();
+
+        return $this->success(null, $transactions);
+    }
+
     public function recentTransaction()
     {
         $res = [];

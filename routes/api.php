@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix("transaction")->group(function () {
         Route::post("store", [TransactionController::class, "store"]);
         Route::get("recent", [TransactionController::class, "recentTransaction"]);
+        Route::get("report", [TransactionController::class, "report"]);
         Route::post("{id}", [TransactionController::class, "update"]);
         Route::delete("{id}", [TransactionController::class, "delete"]);
     });
@@ -51,6 +52,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix("expense")->group(function () {
         Route::post("store", [ExpenseController::class, "store"]);
+        Route::get("report", [ExpenseController::class, "report"]);
         Route::post("{id}", [ExpenseController::class, "update"]);
         Route::delete("{id}", [ExpenseController::class, "delete"]);
     });

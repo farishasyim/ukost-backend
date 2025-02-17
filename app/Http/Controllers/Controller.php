@@ -2,8 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use TelegramBot\Api\BotApi;
+
 abstract class Controller
 {
+    public $bot;
+
+    function __construct()
+    {
+        $this->bot = new BotApi('8105904526:AAETOmV9OIlreQ123GTzLvFlwrcRo80pTh0');
+    }
+
     public function success(?string $message, $data = null, array $additional = [], $status = 200)
     {
         $response = [

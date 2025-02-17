@@ -16,6 +16,13 @@ class ExpenseController extends Controller
         return $this->paginate(null, $expenses);
     }
 
+    public function report(request $request)
+    {
+        $expenses = Expense::with('user')->whereBetween("created_at", [$request->start, $request->end])->orderBy("created_at", "ASC")->get();
+
+        return $this->success(null, $expenses);
+    }
+
     public function store(request $request)
     {
         DB::beginTransaction();
