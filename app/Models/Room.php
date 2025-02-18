@@ -27,4 +27,9 @@ class Room extends Model
     {
         return $this->hasOne(PivotRoom::class, "room_id")->whereNull("left_at")->ofMany("created_at", "max");
     }
+
+    public function transactions()
+    {
+        return $this->hasManyThrough(Transaction::class, PivotRoom::class, "room_id", "pivot_room_id")->orderBy("start_period", "DESC");
+    }
 }

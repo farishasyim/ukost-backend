@@ -12,17 +12,24 @@ class Transaction extends Model
         "pivot_room_id",
         "admin_id",
         "price",
+        "start_period",
+        "end_period",
         "status",
         "invoice",
         "date",
         "proof_payment",
     ];
 
-    protected $appends = ["url"];
+    protected $appends = ["url", "due_date"];
 
     public function pivotRoom()
     {
         return $this->belongsTo(PivotRoom::class, "pivot_room_id");
+    }
+
+    public function getDueDateAttribute()
+    {
+        return date("Y-m-d", strtotime("+7 day", strtotime($this->start_period)));
     }
 
     public function getUrlAttribute()

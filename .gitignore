@@ -21,3 +21,9 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+*.jpg
+*.png
+*.jpeg
+*.JPG
+*.PNG
+*.JPEG

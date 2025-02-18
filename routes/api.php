@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ComplainController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TransactionController;
@@ -34,14 +35,25 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix("transaction")->group(function () {
         Route::post("store", [TransactionController::class, "store"]);
+        Route::get("recent", [TransactionController::class, "recentTransaction"]);
+        Route::get("report", [TransactionController::class, "report"]);
         Route::post("{id}", [TransactionController::class, "update"]);
         Route::delete("{id}", [TransactionController::class, "delete"]);
+    });
+
+    Route::get("complain", [ComplainController::class, "index"]);
+
+    Route::prefix("complain")->group(function () {
+        Route::post("store", [ComplainController::class, "store"]);
+        Route::post("{id}", [ComplainController::class, "update"]);
+        Route::delete("{id}", [ComplainController::class, "delete"]);
     });
 
     Route::get("expense", [ExpenseController::class, "index"]);
 
     Route::prefix("expense")->group(function () {
         Route::post("store", [ExpenseController::class, "store"]);
+        Route::get("report", [ExpenseController::class, "report"]);
         Route::post("{id}", [ExpenseController::class, "update"]);
         Route::delete("{id}", [ExpenseController::class, "delete"]);
     });

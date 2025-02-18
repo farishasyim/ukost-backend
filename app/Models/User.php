@@ -43,7 +43,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $appends = ["profile_link", "identity_card_link"];
+    protected $appends = ["profile_link", "identity_card_link", "is_default"];
 
     public function getProfileLinkAttribute()
     {
@@ -51,6 +51,14 @@ class User extends Authenticatable
             return env('APP_URL') . '/profile_picture/' . $this->profile_picture;
         }
         return env('APP_URL') . '/default.jpg';
+    }
+
+    public function getIsDefaultAttribute()
+    {
+        if ($this->role == "customer") {
+            return $this->password == '$2y$12$R21X/OxAZ1gdLXf5uX.bwOlWtmN5kM8eiMChlSgyPfHR9Yj6ctjdm';
+        }
+        return false;
     }
 
     public function getIdentityCardLinkAttribute()

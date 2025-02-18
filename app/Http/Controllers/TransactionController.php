@@ -8,14 +8,49 @@ use Illuminate\Support\Facades\File;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(request $request)
     {
         $transactions = Transaction::with(["pivotRoom" => [
             "user",
             "room.category",
-        ]])->cursorPaginate();
+        ]])->whereHas("pivotRoom", function ($query) {
+            if (auth()->user()->role == "customer") {
+                return $query->where("customer_id", auth()->user()->id);
+            }
+        })->where(function ($query) use ($request) {
+            if (isset($request->status)) {
+                return $query->where("status", $request->status);
+            }
+        })->cursorPaginate();
 
         return $this->paginate(null, $transactions);
+    }
+
+    public function report(request $request)
+    {
+        $transactions = Transaction::with(["pivotRoom" => ["user", "room.category"]])->whereHas("pivotRoom", fn($query) => $query->where("customer_id", $request->customer_id))->where(function ($query) use ($request) {
+            if (isset($request->status)) {
+                $query->whereIn("status", $request->status);
+            }
+            return $query;
+        })->orderBy("start_period", "DESC")->get();
+
+        return $this->success(null, $transactions);
+    }
+
+    public function recentTransaction()
+    {
+        $res = [];
+        for ($i = -6; $i <= 0; $i++) {
+            $price = Transaction::where("status", "paid")->whereDate("date", date("Y-m-d", strtotime("-$i day")))->sum("price");
+            $x = date("d/m/y", strtotime("-$i day"));
+            $res[] = [
+                "x_axis" => $x,
+                "y_axis" => $price,
+            ];
+        }
+
+        return $this->success(null, $res);
     }
 
     public function store(request $request)
@@ -36,7 +71,9 @@ class TransactionController extends Controller
 
         $data["invoice"] = "INV-" . $request->user()->id .  rand(000, 999) . date("YmdHis");
 
-        $data["created_at"] = $request->date;
+        $data["start_period"] = $request->date;
+
+        $data["end_period"] = date("Y-m-d", strtotime("+1 month", strtotime($request->date)));
 
         if ($data["status"] == "paid") {
             $data["date"] = $request->date;
@@ -57,6 +94,7 @@ class TransactionController extends Controller
         $rules = [
             "photo" => "mimes:jpg,jpeg,png",
             "status" => "required",
+            "date" => "required",
         ];
 
         $request->validate($rules);

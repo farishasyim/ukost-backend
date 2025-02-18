@@ -19,6 +19,8 @@ class PivotRoom extends Model
         "deleted_at",
     ];
 
+    protected $appends = ["bills"];
+
     public function user()
     {
         return $this->belongsTo(User::class, "customer_id");
@@ -29,7 +31,15 @@ class PivotRoom extends Model
         return $this->belongsTo(Room::class, "room_id");
     }
 
-    public function transaction()
+    public function getBillsAttribute()
+    {
+        return Transaction::where([
+            ["pivot_room_id", "=", $this->id],
+            ["status", "=", "unpaid"],
+        ])->count();
+    }
+
+    public function transactions()
     {
         return $this->hasMany(Transaction::class, "pivot_room_id");
     }
