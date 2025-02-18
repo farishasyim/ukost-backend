@@ -105,6 +105,10 @@ return [
         ),
     ],
 
+    'aliases' => [
+        'WhatsappHelper' => 'App\Helper\WhatsappHelper'
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

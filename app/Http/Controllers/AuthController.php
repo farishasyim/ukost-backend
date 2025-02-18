@@ -12,11 +12,11 @@ class AuthController extends Controller
     public function login(request $request)
     {
         $request->validate([
-            "email" => "required",
+            "identity" => "required",
             "password" => "required",
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->identity)->orWhere("phone", $request->identity)->first();
 
         if (!isset($user) || !Hash::check($request->password, $user->password)) {
             return $this->invalid("Wrong email or password", null, 400);

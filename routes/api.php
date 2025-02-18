@@ -25,8 +25,9 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::get("user-management", [UserController::class, "index"]);
     Route::prefix("user-management")->group(function () {
+        Route::post("/sent-credential", [UserController::class, "sentCredential"]);
         Route::post("store", [UserController::class, "store"]);
-        Route::post("{id}", [UserController::class, "update"]);
+        Route::post("/{id}", [UserController::class, "update"]);
         Route::delete("{id}", [UserController::class, "delete"]);
     });
     Route::get("transaction", [TransactionController::class, "index"]);

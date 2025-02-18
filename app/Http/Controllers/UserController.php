@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\WhatsappHelper as HelperWhatsappHelper;
+use App\Helper\WhatsappHelper\WhatsappHelper;
 use App\Models\PivotRoom;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -31,7 +33,6 @@ class UserController extends Controller
     {
         $request->validate([
             "name" => "required",
-            "email" => "required",
             "identity_card" => "mimes:jpg,jpeg,png",
             "profile_picture" => "mimes:jpg,jpeg,png",
             "gender" => "required",
@@ -53,17 +54,17 @@ class UserController extends Controller
             $data["profile_picture"] = $rename;
         }
 
-        $data["password"] = Hash::make(Str::random(10));
-
         $user = User::create($data);
+
+        $this->sentCredential($user->id);
 
         return $this->success("Success add user data", $user, [], 201);
     }
+
     public function update(int $id, request $request)
     {
         $request->validate([
             "name" => "required",
-            "email" => "required",
             "identity_card" => "mimes:jpg,jpeg,png",
             "profile_picture" => "mimes:jpg,jpeg,png",
             "gender" => "required",
@@ -117,5 +118,16 @@ class UserController extends Controller
         $user->delete();
 
         return $this->success("Success delete user data", null, [], 201);
+    }
+
+    public function sentCredential(int $id)
+    {
+        $user = User::where("id", $id)->first();
+
+        if ($user->is_default) {
+            $this->sentMessage($user->phone, "Hai, akun anda telah berhasil dibuat segera lakukan aktivasi akun dengan cara login ke aplikasi menggunakan nomer telpon anda dan masukan password *11223344*, terima kasih!");
+        }
+
+        return $this->success("Success sent message");
     }
 }
