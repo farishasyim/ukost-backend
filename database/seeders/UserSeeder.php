@@ -18,7 +18,6 @@ class UserSeeder extends Seeder
             [
                 "name" => "Faris Hasyim",
                 "email" => "faris.hasyim.03@gmail.com",
-                "password" => Hash::make("11223344"),
                 "role" => "admin",
                 "gender" => "laki-laki",
                 "phone" => "081223896063",
@@ -26,7 +25,6 @@ class UserSeeder extends Seeder
             [
                 "name" => "Faris Hasyim",
                 "email" => "fariscina22@gmail.com",
-                "password" => Hash::make("11223344"),
                 "role" => "customer",
                 "gender" => "laki-laki",
                 "phone" => "087824218035",
