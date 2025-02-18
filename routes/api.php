@@ -26,7 +26,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::get("user-management", [UserController::class, "index"]);
     Route::prefix("user-management")->group(function () {
-        Route::post("/sent-credential", [UserController::class, "sentCredential"]);
+        Route::get("sent-credential/{id}", [UserController::class, "sentCredential"]);
         Route::post("store", [UserController::class, "store"]);
         Route::post("/{id}", [UserController::class, "update"]);
         Route::delete("{id}", [UserController::class, "delete"]);
@@ -37,6 +37,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post("store", [TransactionController::class, "store"]);
         Route::get("recent", [TransactionController::class, "recentTransaction"]);
         Route::get("report", [TransactionController::class, "report"]);
+        Route::get("sent-invoice/{id}", [TransactionController::class, "sentInvoice"]);
         Route::post("{id}", [TransactionController::class, "update"]);
         Route::delete("{id}", [TransactionController::class, "delete"]);
     });

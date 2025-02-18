@@ -31,7 +31,7 @@ abstract class Controller
         return response()->json($response, $status);
     }
 
-    public function sentMessage(string $number, string $message): void
+    public function sentMessage(string $number, string $message)
     {
         try {
             $curl = curl_init();
@@ -63,7 +63,7 @@ abstract class Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
-            echo $response;
+            return $response;
         } catch (\Exception $e) {
             logger($e->getMessage());
             throw $e;

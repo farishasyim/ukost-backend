@@ -38,6 +38,17 @@ class TransactionController extends Controller
         return $this->success(null, $transactions);
     }
 
+    public function sentInvoice(int $id)
+    {
+        $transaction = Transaction::where("id", $id)->first();
+
+        $date = date("M Y", strtotime($transaction->start_period));
+
+        $price = number_format($transaction->price);
+
+        return $this->sentMessage($transaction->pivotRoom->user->phone, "(*$transaction->invoice*)\nAnda memiliki tagihan $date sebesar *Rp.$price*");
+    }
+
     public function recentTransaction()
     {
         $res = [];

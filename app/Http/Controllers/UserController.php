@@ -23,6 +23,10 @@ class UserController extends Controller
                     $query->has("pivot");
                 }
             }
+
+            if (isset($request->keyword)) {
+                $query->where("name", "LIKE", "%$request->keyword%");
+            }
             return $query;
         })->where("role", "customer")->cursorPaginate();
 
@@ -128,6 +132,6 @@ class UserController extends Controller
             $this->sentMessage($user->phone, "Hai, akun anda telah berhasil dibuat segera lakukan aktivasi akun dengan cara login ke aplikasi menggunakan nomer telpon anda dan masukan password *11223344*, terima kasih!");
         }
 
-        return $this->success("Success sent message");
+        return $this->success("Success sent message", null, [], 201);
     }
 }
