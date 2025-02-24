@@ -60,6 +60,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::post('logout', [AuthController::class, "logout"]);
+    Route::post("change-password", [AuthController::class, "changePassword"]);
 });
 
 Route::post('login', [AuthController::class, "login"]);

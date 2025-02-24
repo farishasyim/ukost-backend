@@ -23,6 +23,13 @@ class ExpenseController extends Controller
         return $this->success(null, $expenses);
     }
 
+    public function reportView(request $request)
+    {
+        $expenses = $this->report($request)->original["data"];
+
+        return view("expense-report", compact("expenses"));
+    }
+
     public function store(request $request)
     {
         DB::beginTransaction();

@@ -32,4 +32,18 @@ class AuthController extends Controller
         auth()->user()->tokens()->delete();
         return $this->success("Request logout has been success");
     }
+
+
+    public function changePassword(request $request)
+    {
+        $request->validate([
+            "password" => "required",
+        ]);
+
+        $request->user()->update([
+            "password" => Hash::make($request->password),
+        ]);
+
+        return $this->success("Data has been changed", null, [], 201);
+    }
 }
